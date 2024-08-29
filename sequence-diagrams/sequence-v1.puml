@@ -1,7 +1,41 @@
 @startuml
+'https://plantuml.com/sequence-diagram
 
-!unquoted function $bold($v)
-	!return "**" + $v + "**"
+'HTTP Functions
+!unquoted function $httpReq($method, $url, $msg='')
+	!if (%strlen($msg) > 0)
+		!return '""HTTP/1.1""\n""' +  %upper($method) + ' **' + $url + '**""\n' + $msg
+	!else
+		!return '""HTTP/1.1""\n""' +  %upper($method) + ' **' + $url + '**""'
+	!endif
 !endfunction
+
+!unquoted function $httpRes($status, $msg='', $forceFormat=1)
+	!if ($status >= 400) && ($forceFormat == 1)
+		!return '""**<WRONG RESPONSE FORMAT>**""\n//Please use $httpErr response//'
+	!elseif (%strlen($msg) > 0)
+		!return '""HTTP/1.1""\n""Status code: **' + $status + '**""\n' + $msg
+	!else
+		!return '""HTTP/1.1""\n""Status code: **' + $status + '**""'
+	!endif
+!endfunction
+
+!unquoted function $httpErr($status, $errCode, $msg='')
+	!if (%strlen($errCode) > 0 && %strlen($msg) > 0)
+		!return '""HTTP/1.1""\n""Status code: **' + $status + '**""\n""Error code: **' + %upper($errCode) + '**""\n""Message:"" ' + $msg
+	!elseif (%strlen($errCode) > 0)
+		!return '""HTTP/1.1""\n""Status code: **' + $status + '**""\n""Error code: **' + %upper($errCode) + '**""'
+	!elseif (%strlen($msg) > 0)
+		!return '""HTTP/1.1""\n""Status code: **' + $status + '**""\n' + $msg
+	!else
+		!return '""HTTP/1.1""\n""Status code: **' + $status + '**""'
+	!endif
+!endfunction
+
+'Colors
+!$cModified = "#blue"
+!$cRemoved = "#red"
+!$cAdded = "#green"
+!$cMissingDep = "#orange"
 
 @enduml
