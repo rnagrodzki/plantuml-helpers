@@ -1,0 +1,7 @@
+@startuml
+
+!unquoted function $bold($v)
+	!return "**" + $v + "**"
+!endfunction
+
+@enduml
