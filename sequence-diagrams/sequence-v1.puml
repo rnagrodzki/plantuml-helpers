@@ -1,0 +1,82 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+'Validation functions
+!unquoted function $isInvalidHTTPMethod($method)
+	!$val = %upper($method)
+	!if ($val == "GET") || ($val == "POST") || ($val == "PUT") || ($val == "DELETE") || ($val == "PATCH")
+		!return 0
+	!else
+		!return 1
+!endfunction
+
+!unquoted function $isInvalidHTTPStatusCode($status)
+	!$val = %intval($status)
+	!if ($val >= 100) && ($val <= 599)
+		!return 0
+	!else
+		!return 1
+	!endif
+!endfunction
+
+'HTTP Functions
+!unquoted function $httpReq($method, $url, $msg='')
+	!$description = ''
+  !if (%strlen($msg) > 0)
+    !$description = '\n' + $msg
+  !endif
+
+	!if ($isInvalidHTTPMethod($method))
+		!return '""HTTP/1.1""\n""**<WRONG HTTP METHOD>**"" **' + $url + '**""' + $description
+	!else
+		!return '""HTTP/1.1""\n""' +  %upper($method) + ' **' + $url + '**""' + $description
+	!endif
+!endfunction
+
+!unquoted function $httpResWithErrCode($status, $errCode, $msg='')
+	!$statusCode = %intval($status)
+
+	!$description = ''
+  !if (%strlen($msg) > 0)
+    !$description = '\n' + $msg
+  !endif
+
+  !$errorCode = ''
+  !if (%strlen($errCode) > 0)
+		!$errorCode = '\n""Error code: **' + %upper($errCode) + '**""'
+	!endif
+
+	!if ($isInvalidHTTPStatusCode($statusCode))
+		!return ""HTTP/1.1""\n""HTTP status code: **<WRONG HTTP STATUS CODE>**""\n""Error code: **' + %upper($errCode) + '**""\n""Message:"" ' + $msg
+	!else
+		!return '""HTTP/1.1""\n""HTTP status code: **' + $statusCode + '**""' + $errorCode + $description
+	!endif
+!endfunction
+
+!unquoted function $httpRes($status, $msg='', $errCode='')
+	!$statusCode = %intval($status)
+
+	!$description = ''
+	!if (%strlen($msg) > 0)
+		!$description = '\n' + $msg
+	!endif
+
+	!if ($isInvalidHTTPStatusCode($statusCode))
+  		!return '""HTTP/1.1""\n""Status code: **<WRONG HTTP STATUS CODE>**""\n' + $description
+	!elseif ($statusCode >= 400)
+		!return $httpResWithErrCode($statusCode, $errCode, $msg)
+	!else
+		!return '""HTTP/1.1""\n""Status code: **' + $statusCode + '**""' + $description
+	!endif
+!endfunction
+
+'Colors
+!$cModified = "#CornflowerBlue"
+!$cRemoved = "#Tomato"
+!$cAdded = "#green"
+!$cMissingDep = "#orange"
+
+'Text wrappers
+!unquoted function $ct($text, $color) !return '<color ' + $color + '>' + $text + '</color>'
+
+@enduml
