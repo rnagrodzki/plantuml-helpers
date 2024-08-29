@@ -1,0 +1,65 @@
+@startuml(id=HTT_REQUESTS)
+'https://plantuml.com/sequence-diagram
+
+!include_once sequence-v1.puml
+autonumber
+
+title HTTP Requests\n(examples)
+
+note over a, b
+**Snippet:**
+$""httpReq(get, /my-url, Get data)""
+end note
+a -> b : $httpReq(get, /my-url, Get data)
+|||
+note over a, b
+**Snippet:**
+$""httpReq(//**geet**//, /my-url, Get data)""
+end note
+a -> b : $httpReq(geet, /my-url, Get data)
+|||
+note over a, b
+**Snippet:**
+$""httpReq(post, /my-url)""
+end note
+a -> b : $httpReq(post, /my-url)
+@enduml
+
+@startuml(id=HTTP_RESPONSES)
+
+!include_once sequence-v1.puml
+autonumber
+
+title HTTP Responses\n(examples)
+
+note over a, b
+**Snippet:**
+$""httpRes(200, Response message)""
+end note
+b --> a : $httpRes(200, Response message)
+|||
+note over a, b
+**Snippet:**
+$""httpRes(//**99**//, Response message)""
+end note
+b --> a : $httpRes(99, Response message)
+|||
+note over a, b
+**Snippet:**
+$""httpRes(400, Response message)""
+end note
+b --> a : $httpRes(400, Response message)
+|||
+note over a, b
+**Snippet:**
+$""httpRes(400, Response message, err0101)""
+end note
+b --> a : $httpRes(400, Response message, err0101)
+|||
+note over a, b
+**Snippet:**
+$""httpRes(400,, err0101)""
+end note
+b --> a : $httpRes(400,, err0101)
+|||
+@enduml
