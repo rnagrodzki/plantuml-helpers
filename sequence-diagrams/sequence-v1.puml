@@ -10,25 +10,27 @@
 	!endif
 !endfunction
 
-!unquoted function $httpRes($status, $msg='', $forceFormat=1)
-	!if ($status >= 400) && ($forceFormat == 1)
+!unquoted function $httpRes($status, $msg='', $ff=1)
+	!$statusCode = %intval($status)
+	!if ($statusCode >= 400) && ($ff == 1)
 		!return '""**<WRONG RESPONSE FORMAT>**""\n//Please use $httpErr response//'
 	!elseif (%strlen($msg) > 0)
-		!return '""HTTP/1.1""\n""Status code: **' + $status + '**""\n' + $msg
+		!return '""HTTP/1.1""\n""Status code: **' + $statusCode + '**""\n' + $msg
 	!else
-		!return '""HTTP/1.1""\n""Status code: **' + $status + '**""'
+		!return '""HTTP/1.1""\n""Status code: **' + $statusCode + '**""'
 	!endif
 !endfunction
 
 !unquoted function $httpErr($status, $errCode, $msg='')
+	!$statusCode = %intval($status)
 	!if (%strlen($errCode) > 0 && %strlen($msg) > 0)
-		!return '""HTTP/1.1""\n""Status code: **' + $status + '**""\n""Error code: **' + %upper($errCode) + '**""\n""Message:"" ' + $msg
+		!return '""HTTP/1.1""\n""Status code: **' + $statusCode + '**""\n""Error code: **' + %upper($errCode) + '**""\n""Message:"" ' + $msg
 	!elseif (%strlen($errCode) > 0)
-		!return '""HTTP/1.1""\n""Status code: **' + $status + '**""\n""Error code: **' + %upper($errCode) + '**""'
+		!return '""HTTP/1.1""\n""Status code: **' + $statusCode + '**""\n""Error code: **' + %upper($errCode) + '**""'
 	!elseif (%strlen($msg) > 0)
-		!return '""HTTP/1.1""\n""Status code: **' + $status + '**""\n' + $msg
+		!return '""HTTP/1.1""\n""Status code: **' + $statusCode + '**""\n' + $msg
 	!else
-		!return '""HTTP/1.1""\n""Status code: **' + $status + '**""'
+		!return '""HTTP/1.1""\n""Status code: **' + $statusCode + '**""'
 	!endif
 !endfunction
 
