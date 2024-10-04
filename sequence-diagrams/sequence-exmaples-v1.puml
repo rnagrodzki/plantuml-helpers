@@ -62,4 +62,16 @@ $""httpRes(400,, err0101)""
 end note
 b --> a : $httpRes(400,, err0101)
 |||
+note over a, b
+**Snippet:**
+$""httpRes(4xx, Response message)""
+end note
+b --> a : $httpRes(4xx, Response message)
+|||
+note over a, b
+**Snippet:**
+$""httpRes(5xx, Response message)""
+end note
+b --> a : $httpRes(5xx, Response message)
+|||
 @enduml

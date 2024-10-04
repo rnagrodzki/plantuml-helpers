@@ -11,11 +11,30 @@
 !endfunction
 
 !unquoted function $isInvalidHTTPStatusCode($status)
+	!$upperStatus = %upper($status)
+	!if ($upperStatus == "4XX") || ($upperStatus == "5XX")
+		!return 0
+	!endif
+
 	!$val = %intval($status)
 	!if ($val >= 100) && ($val <= 599)
 		!return 0
 	!else
 		!return 1
+	!endif
+!endfunction
+
+!unquoted function $isErrorHTTPStatusCode($status)
+	!$upperStatus = %upper($status)
+	!if ($upperStatus == "4XX") || ($upperStatus == "5XX")
+		!return 1
+	!endif
+
+	!$val = %intval($status)
+	!if ($val >= 300) && ($val <= 599)
+		!return 1
+	!else
+		!return 0
 	!endif
 !endfunction
 
@@ -34,7 +53,7 @@
 !endfunction
 
 !unquoted function $httpResWithErrCode($status, $errCode, $msg='')
-	!$statusCode = %intval($status)
+	!$statusCode = %upper($status)
 
 	!$description = ''
   !if (%strlen($msg) > 0)
@@ -46,7 +65,7 @@
 		!$errorCode = '\n""Error code: **' + %upper($errCode) + '**""'
 	!endif
 
-	!if ($isInvalidHTTPStatusCode($statusCode))
+	!if ($isInvalidHTTPStatusCode($status))
 		!return ""HTTP/1.1""\n""HTTP status code: **<WRONG HTTP STATUS CODE>**""\n""Error code: **' + %upper($errCode) + '**""\n""Message:"" ' + $msg
 	!else
 		!return '""HTTP/1.1""\n""HTTP status code: **' + $statusCode + '**""' + $errorCode + $description
@@ -54,7 +73,7 @@
 !endfunction
 
 !unquoted function $httpRes($status, $msg='', $errCode='')
-	!$statusCode = %intval($status)
+	!$statusCode = %upper($status)
 
 	!$description = ''
 	!if (%strlen($msg) > 0)
@@ -62,8 +81,8 @@
 	!endif
 
 	!if ($isInvalidHTTPStatusCode($statusCode))
-  		!return '""HTTP/1.1""\n""Status code: **<WRONG HTTP STATUS CODE>**""\n' + $description
-	!elseif ($statusCode >= 400)
+  		!return '""HTTP/1.1""\n""Status code: **<WRONG HTTP STATUS CODE>**""' + $description
+	!elseif ($isErrorHTTPStatusCode($statusCode))
 		!return $httpResWithErrCode($statusCode, $errCode, $msg)
 	!else
 		!return '""HTTP/1.1""\n""Status code: **' + $statusCode + '**""' + $description
