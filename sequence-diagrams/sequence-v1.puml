@@ -89,6 +89,25 @@
 	!endif
 !endfunction
 
+!unquoted function $action($msg, $title='', $alt='')
+	!$description = ''
+  !if (%strlen($msg) > 0)
+		!$description = '**' + $msg + '**'
+	!endif
+  
+  !if (%strlen($title) > 0 && %strlen($msg) > 0)
+    !$description = '""' + %upper($title) + '""\n' + $description
+  !elseif (%strlen($title) > 0)
+    !$description = '""' + %upper($title) + '""'
+  !endif
+
+  !if (%strlen($alt) > 0)
+		!$description = $description + '\n//' + $alt + '//'
+	!endif
+
+  !return $description
+!endfunction
+
 'Colors
 !$cModified = "#CornflowerBlue"
 !$cRemoved = "#Tomato"
